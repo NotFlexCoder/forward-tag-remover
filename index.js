@@ -92,16 +92,27 @@ bot.command('reset', (ctx) => {
 });
 
 app.post(`/webhook/${process.env.BOT_TOKEN}`, (req, res) => {
+  console.log('Webhook received:', JSON.stringify(req.body, null, 2));
   bot.handleUpdate(req.body);
   res.sendStatus(200);
 });
 
+app.get(`/webhook/${process.env.BOT_TOKEN}`, (req, res) => {
+  res.send('Webhook endpoint is active. Use POST method.');
+});
+
 app.get('/', (req, res) => {
-  res.send('Telegram Auto-Forward Bot is running!');
+  res.send(`Telegram Auto-Forward Bot is running!
+Bot Token: ${process.env.BOT_TOKEN ? 'Set' : 'Not Set'}
+Admin ID: ${adminId || 'Not Set'}
+Source Channel: ${sourceChannel || 'Not Set'}
+Target Channel: ${targetChannel || 'Not Set'}`);
 });
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Server running on port ${process.env.PORT || 3000}`);
+  console.log(`Webhook URL: ${process.env.WEBHOOK_URL || 'Not Set'}`);
+  console.log(`Bot Token: ${process.env.BOT_TOKEN ? 'Set' : 'Not Set'}`);
 });
 
 process.once('SIGINT', () => bot.stop('SIGINT'));
