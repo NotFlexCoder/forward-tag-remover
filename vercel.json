@@ -13,7 +13,7 @@
     }
   ],
   "env": {
-    "BOT_TOKEN": "@bot_token",
+    "BOT_TOKEN": "8399324383:AAHGyZUvGcL7-T44Sm0ogUU3R-cvyJaMIeA",
     "WEBHOOK_URL": "@webhook_url",
     "NODE_ENV": "production"
   }
