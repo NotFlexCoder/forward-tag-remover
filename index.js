@@ -91,14 +91,30 @@ bot.command('reset', (ctx) => {
   }
 });
 
-app.post(`/webhook/${process.env.BOT_TOKEN}`, (req, res) => {
-  console.log('Webhook received:', JSON.stringify(req.body, null, 2));
-  bot.handleUpdate(req.body);
-  res.sendStatus(200);
+app.post('/webhook/:token', (req, res) => {
+  console.log('Webhook received for token:', req.params.token);
+  console.log('Request body:', JSON.stringify(req.body, null, 2));
+  
+  if (req.params.token === process.env.BOT_TOKEN) {
+    try {
+      bot.handleUpdate(req.body);
+      res.sendStatus(200);
+    } catch (error) {
+      console.error('Error handling update:', error);
+      res.sendStatus(500);
+    }
+  } else {
+    console.log('Invalid token received');
+    res.sendStatus(401);
+  }
 });
 
-app.get(`/webhook/${process.env.BOT_TOKEN}`, (req, res) => {
-  res.send('Webhook endpoint is active. Use POST method.');
+app.get('/webhook/:token', (req, res) => {
+  if (req.params.token === process.env.BOT_TOKEN) {
+    res.send('Webhook endpoint is active. Use POST method.');
+  } else {
+    res.sendStatus(401);
+  }
 });
 
 app.get('/', (req, res) => {
