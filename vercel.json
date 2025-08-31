@@ -14,7 +14,6 @@
   ],
   "env": {
     "BOT_TOKEN": "8399324383:AAHGyZUvGcL7-T44Sm0ogUU3R-cvyJaMIeA",
-    "WEBHOOK_URL": "https://forward-tag-remover.vercel.app",
-    "NODE_ENV": "production"
+    "WEBHOOK_URL": "https://forward-tag-remover.vercel.app/webhook/8399324383:AAHGyZUvGcL7-T44Sm0ogUU3R-cvyJaMIeA"
   }
 }
