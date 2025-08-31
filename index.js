@@ -1,10 +1,6 @@
 const { Telegraf } = require('telegraf');
-const express = require('express');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
-const app = express();
-
-app.use(express.json());
 
 let sourceChannel = null;
 let targetChannel = null;
@@ -70,6 +66,11 @@ bot.on('channel_post', async (ctx) => {
 });
 
 bot.command('start', (ctx) => {
+  console.log('Start command received from:', ctx.from.id);
+  if (!adminId) {
+    adminId = ctx.from.id;
+    console.log('Admin ID set to:', adminId);
+  }
   ctx.reply('Bot is running! Forward a message from your source channel to set up automatic forwarding.');
 });
 
@@ -91,45 +92,25 @@ bot.command('reset', (ctx) => {
   }
 });
 
-app.post('/webhook/:token', (req, res) => {
-  console.log('Webhook received for token:', req.params.token);
-  console.log('Request body:', JSON.stringify(req.body, null, 2));
-  
-  if (req.params.token === process.env.BOT_TOKEN) {
+module.exports = async (req, res) => {
+  if (req.method === 'POST' && req.url.includes('/webhook/')) {
     try {
-      bot.handleUpdate(req.body);
-      res.sendStatus(200);
+      console.log('Webhook received:', JSON.stringify(req.body, null, 2));
+      await bot.handleUpdate(req.body);
+      res.status(200).json({ ok: true });
     } catch (error) {
-      console.error('Error handling update:', error);
-      res.sendStatus(500);
+      console.error('Webhook error:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
-  } else {
-    console.log('Invalid token received');
-    res.sendStatus(401);
-  }
-});
-
-app.get('/webhook/:token', (req, res) => {
-  if (req.params.token === process.env.BOT_TOKEN) {
-    res.send('Webhook endpoint is active. Use POST method.');
-  } else {
-    res.sendStatus(401);
-  }
-});
-
-app.get('/', (req, res) => {
-  res.send(`Telegram Auto-Forward Bot is running!
+  } else if (req.method === 'GET' && req.url.includes('/webhook/')) {
+    res.status(200).send('Webhook endpoint is active. Use POST method.');
+  } else if (req.method === 'GET' && req.url === '/') {
+    res.status(200).send(`Telegram Auto-Forward Bot is running!
 Bot Token: ${process.env.BOT_TOKEN ? 'Set' : 'Not Set'}
 Admin ID: ${adminId || 'Not Set'}
 Source Channel: ${sourceChannel || 'Not Set'}
 Target Channel: ${targetChannel || 'Not Set'}`);
-});
-
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server running on port ${process.env.PORT || 3000}`);
-  console.log(`Webhook URL: ${process.env.WEBHOOK_URL || 'Not Set'}`);
-  console.log(`Bot Token: ${process.env.BOT_TOKEN ? 'Set' : 'Not Set'}`);
-});
-
-process.once('SIGINT', () => bot.stop('SIGINT'));
-process.once('SIGTERM', () => bot.stop('SIGTERM'));
+  } else {
+    res.status(404).send('Not Found');
+  }
+};
