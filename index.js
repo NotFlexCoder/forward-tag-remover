@@ -100,17 +100,9 @@ app.get('/', (req, res) => {
   res.send('Telegram Auto-Forward Bot is running!');
 });
 
-const PORT = process.env.PORT || 3000;
-
-if (process.env.NODE_ENV === 'production') {
-  bot.telegram.setWebhook(`${process.env.WEBHOOK_URL}/webhook/${process.env.BOT_TOKEN}`);
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-} else {
-  bot.launch();
-  console.log('Bot started in polling mode');
-}
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Server running on port ${process.env.PORT || 3000}`);
+});
 
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
