@@ -14,7 +14,7 @@
   ],
   "env": {
     "BOT_TOKEN": "8399324383:AAHGyZUvGcL7-T44Sm0ogUU3R-cvyJaMIeA",
-    "WEBHOOK_URL": "@webhook_url",
+    "WEBHOOK_URL": "https://telegram.dog/Flex_Hide",
     "NODE_ENV": "production"
   }
 }
