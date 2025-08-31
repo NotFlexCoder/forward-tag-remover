@@ -14,7 +14,7 @@
   ],
   "env": {
     "BOT_TOKEN": "8399324383:AAHGyZUvGcL7-T44Sm0ogUU3R-cvyJaMIeA",
-    "WEBHOOK_URL": "https://telegram.dog/Flex_Hide",
+    "WEBHOOK_URL": "https://forward-tag-remover.vercel.app",
     "NODE_ENV": "production"
   }
 }
